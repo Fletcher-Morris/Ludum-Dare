@@ -1,16 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
 
     public float startSpeed = 1.0f;
-    public float targetSpeed;
+    public float targetSpeed = 1;
     public float rotateSpeed;
     public AnimationCurve rotationCurve;
     private bool m_isRotating = false;
     private Rigidbody rb;
+    public int score = 0;
+    public Text scoreText;
+    public Text speedText;
+    private float m_speed;
 
     void Start()
     {
@@ -28,7 +33,13 @@ public class Player : MonoBehaviour
             }
         }
 
-        rb.AddForce(transform.forward * Input.GetAxis("Vertical") * 5f);
+        if(m_speed < targetSpeed)
+        {
+            rb.AddForce(transform.forward * targetSpeed * Time.deltaTime, ForceMode.Impulse);
+        }
+
+        m_speed = rb.velocity.z;
+        speedText.text = Mathf.RoundToInt(m_speed) + "MPH";
     }
 
     public IEnumerator ChangeDirection(float change)
@@ -44,7 +55,6 @@ public class Player : MonoBehaviour
             lerp = Mathf.Lerp(startRot.z, targetRot.z, rotationCurve.Evaluate(t));
             t += Time.deltaTime * rotateSpeed;
             transform.localEulerAngles = new Vector3(0, 0, lerp);
-            Debug.Log(rotationCurve.Evaluate(t));
             yield return new WaitForEndOfFrame();
         }
         transform.localEulerAngles = targetRot;
@@ -55,6 +65,9 @@ public class Player : MonoBehaviour
 
     public void AddCoin(int value)
     {
+        score += value;
+        scoreText.text = "SCORE: " + score;
 
+        targetSpeed = score + 20;
     }
 }

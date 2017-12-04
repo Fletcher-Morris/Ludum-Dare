@@ -245,7 +245,7 @@ MonoBehaviour:
   bobSpeed: 1
   bobHeight: 0.2
   spinSpeed: 100
-  value: 0
+  value: 5
   worldSpawner: {fileID: 0}
 --- !u!135 &135042920143591980
 SphereCollider:
