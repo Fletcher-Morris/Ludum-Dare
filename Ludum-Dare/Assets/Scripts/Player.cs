@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.PostProcessing;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -20,32 +22,127 @@ public class Player : MonoBehaviour
     private float m_speed;
     public int scoreDecay = 10;
     private float decayedScore;
+    public float minFov = 60;
+    public float maxFov = 90;
+    public float hueSpeed = 1.0f;
+    private float m_hue = 0f;
+
+    public GameObject menuPanel;
+    public GameObject pausePanel;
+
+    public bool paused = false;
+    public bool canControll = false;
+
+    public Material surfaceMat;
+    public PostProcessingProfile profile;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         m_cam = Camera.main;
         targetSpeed = startSpeed;
+
+        var grading = profile.colorGrading.settings;
+        grading.basic.hueShift = 0;
+        profile.colorGrading.settings = grading;
+    }
+
+    public void Go()
+    {
+        Time.timeScale = 1.0f;
+        canControll = true;
+        menuPanel.SetActive(false);
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void ReloadScene()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+    }
+
+    public void Pause()
+    {
+        paused = !paused;
+
+        if (paused)
+        {
+            pausePanel.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            pausePanel.SetActive(false);
+            Time.timeScale = 1.0f;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && canControll)
+        {
+            Pause();
+        }
+
         decayedScore = score - scoreDecay * Time.deltaTime;
         score = Mathf.RoundToInt(decayedScore);
         if(score <= 0)
         {
             score = 0;
         }
-        scoreText.text = "SCORE: " + score;
 
-        if (Input.GetAxis("Horizontal") >= 0.5f || Input.GetAxis("Horizontal") <= -0.5f)
+        float targetFov = 60f;
+        Vector3 newCamRot = m_cam.transform.localEulerAngles;
+        if (canControll)
         {
-            if (!m_isRotating)
+            scoreText.text = "SCORE: " + score;
+
+            if (Input.GetAxis("Horizontal") >= 0.5f || Input.GetAxis("Horizontal") <= -0.5f)
             {
-                StartCoroutine(ChangeDirection(Mathf.RoundToInt(Input.GetAxis("Horizontal")) * 45));
-                Debug.Log("Rotating");
+                if (!m_isRotating)
+                {
+                    StartCoroutine(ChangeDirection(Mathf.RoundToInt(Input.GetAxis("Horizontal")) * 45));
+                    Debug.Log("Rotating");
+                }
             }
+
+            if (!paused)
+            {
+                m_hue += hueSpeed * Time.deltaTime;
+                if(m_hue > 179.5f)
+                {
+                    m_hue = -179.5f;
+                }
+                else if(m_hue < -179.5f)
+                {
+                    m_hue = 179.5f;
+                }
+
+                var grading = profile.colorGrading.settings;
+                grading.basic.hueShift = m_hue;
+                profile.colorGrading.settings = grading;
+            }
+
+            newCamRot.x = Mathf.Lerp(newCamRot.x, 15f, 0.05f);
+
+            targetFov = Mathf.Lerp(minFov, maxFov, (m_speed / maxSpeed));
         }
+        else
+        {
+            newCamRot.x = Mathf.Lerp(newCamRot.x, 0f, 0.05f);
+            targetFov = 45f;
+        }
+        m_cam.transform.localEulerAngles = newCamRot;
 
         targetSpeed = Mathf.Lerp(m_speed, decayedScore + 21, 0.9f);
 
@@ -57,6 +154,28 @@ public class Player : MonoBehaviour
 
         m_speed = rb.velocity.z;
         speedText.text = Mathf.FloorToInt(m_speed) - 1 + "MPH";
+
+        m_cam.fov = Mathf.Lerp(m_cam.fov, targetFov, 0.05f);
+
+
+
+        if(m_speed <= 150f)
+        {
+            surfaceMat.SetTextureScale("_MainTex", new Vector2(3f, 0.5f));
+        }
+        else if(m_speed <= 300f)
+        {
+            surfaceMat.SetTextureScale("_MainTex", new Vector2(3f, 0.25f));
+        }
+        else
+        {
+            surfaceMat.SetTextureScale("_MainTex", new Vector2(3f, 0.125f));
+        }
+
+        if (paused)
+        {
+            surfaceMat.SetTextureScale("_MainTex", new Vector2(3f, 0.5f));
+        }
     }
 
     public IEnumerator ChangeDirection(float change)

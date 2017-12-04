@@ -23,6 +23,8 @@ public class WorldSpawner : MonoBehaviour
     private int m_oldestSegmentPos = 0;
     private int m_newestSegmentPos = 0;
     private int m_generatedSections = 0;
+    public bool spawnCoins = false;
+    public bool spawnBlockers = false;
 
     void Awake()
     {
@@ -34,6 +36,12 @@ public class WorldSpawner : MonoBehaviour
         {
             GenerateNextSection();
         }
+    }
+
+    public void StartGame()
+    {
+        spawnBlockers = true;
+        spawnCoins = true;
     }
 
     void FixedUpdate()
@@ -166,9 +174,9 @@ public class WorldSpawner : MonoBehaviour
             else if (i == 1)
                 segRot = new Vector3(45, -90, 90);
             else if (i == 2)
-                segRot = new Vector3(180, 90, 90);
+                segRot = new Vector3(0, -90, 270);
             else if (i == 3)
-                segRot = new Vector3(-135, 90, 90);
+                segRot = new Vector3(-45, -90, 90);
             else if (i == 4)
                 segRot = new Vector3(-90, 0, 0);
             else if (i == 5)
@@ -184,7 +192,7 @@ public class WorldSpawner : MonoBehaviour
             m_generatedSections = Mathf.Clamp(m_generatedSections, 0, segmentPoolSize);
         }
 
-        if(Random.Range(0,3) == 0)
+        if(Random.Range(0,2) == 0 && spawnCoins)
         {
             Vector2 coinXY = Vector2.zero;
             int j = Random.Range(0, 7);

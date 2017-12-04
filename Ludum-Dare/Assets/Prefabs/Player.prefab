@@ -183,13 +183,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1947704340623334}
-  m_LocalRotation: {x: 0.13052596, y: -0, z: -0, w: 0.99144495}
-  m_LocalPosition: {x: 0, y: -3.26, z: -11.38}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -3.25, z: -11.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4483118864343826}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 15.000001, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4192232071737824
 Transform:
   m_ObjectHideFlags: 1
@@ -280,7 +280,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 50
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -525,6 +525,15 @@ MonoBehaviour:
   scoreText: {fileID: 0}
   speedText: {fileID: 0}
   scoreDecay: 20
+  minFov: 60
+  maxFov: 80
+  hueSpeed: 2
+  menuPanel: {fileID: 0}
+  pausePanel: {fileID: 0}
+  paused: 0
+  canControll: 0
+  surfaceMat: {fileID: 2100000, guid: a41ed18a025121340b6c3c73448afcbe, type: 2}
+  profile: {fileID: 11400000, guid: d954b8f74707ce047a6b5718a10e8105, type: 2}
 --- !u!114 &114747018136854136
 MonoBehaviour:
   m_ObjectHideFlags: 1
