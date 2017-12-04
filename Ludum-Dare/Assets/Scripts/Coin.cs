@@ -10,6 +10,13 @@ public class Coin : MonoBehaviour
     public float bobSpeed = 1.0f, bobHeight = 0.2f, spinSpeed = 1.0f;
 
     public int value;
+    [HideInInspector]
+    public WorldSpawner worldSpawner;
+
+    void Start()
+    {
+
+    }
 
     void Update()
     {
@@ -32,10 +39,16 @@ public class Coin : MonoBehaviour
 
     public IEnumerator DestroyCoin()
     {
+        if (!worldSpawner)
+        {
+            worldSpawner = GameObject.Find("World Spawner").GetComponent<WorldSpawner>();
+        }
+
         cube1.GetComponent<Renderer>().enabled = false;
         cube2.GetComponent<Renderer>().enabled = false;
         emitter.Emit(30);
-        Destroy(gameObject,1f);
+        yield return new WaitForSeconds(1.1f);
+        worldSpawner.DestroyCoin(gameObject);
         yield return null;
     }
 }
