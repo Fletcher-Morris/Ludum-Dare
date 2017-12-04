@@ -117,7 +117,7 @@ Transform:
   m_GameObject: {fileID: 1465224545969916}
   m_LocalRotation: {x: 0, y: 0.5735764, z: 0, w: 0.8191521}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 4193860194407760}
   m_RootOrder: 0
@@ -130,7 +130,7 @@ Transform:
   m_GameObject: {fileID: 1168209383564270}
   m_LocalRotation: {x: -0.000000053565923, y: -0.7071058, z: -0.49999994, w: 0.50000155}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 4193860194407760}
   m_RootOrder: 1
@@ -243,7 +243,7 @@ MonoBehaviour:
   cube2: {fileID: 1168209383564270}
   emitter: {fileID: 198710892606275522}
   bobSpeed: 1
-  bobHeight: 0.2
+  bobHeight: 2
   spinSpeed: 100
   value: 5
   worldSpawner: {fileID: 0}
@@ -315,7 +315,7 @@ ParticleSystem:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  moveWithTransform: 1
+  moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
   randomSeed: 151103396

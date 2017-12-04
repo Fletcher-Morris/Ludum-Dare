@@ -13,16 +13,17 @@ public class Coin : MonoBehaviour
     [HideInInspector]
     public WorldSpawner worldSpawner;
     private bool isDestroyed = false;
+    private float r = 0;
 
     void Start()
     {
-
+        r = Random.Range(0.0f, 100.0f);
     }
 
     void Update()
     {
         Vector3 newPos = Vector3.zero;
-        newPos.y = Mathf.Sin(Time.time * bobSpeed) * bobHeight;
+        newPos.z = Mathf.Sin((Time.time + (r/100f)) * bobSpeed) * bobHeight + bobHeight/2;
         cube1.transform.localPosition = newPos;
         cube2.transform.localPosition = newPos;
         cube1.transform.Rotate(Vector3.right * spinSpeed * Time.deltaTime);
@@ -34,13 +35,22 @@ public class Coin : MonoBehaviour
         if (other.CompareTag("Player") && !isDestroyed)
         {
             other.GetComponent<Player>().AddCoin(value);
-            StartCoroutine(DestroyCoin());
+            StartCoroutine(DestroyCoin(other.gameObject));
         }
     }
 
-    public IEnumerator DestroyCoin()
+    public void Reset()
+    {
+        cube1.GetComponent<Renderer>().enabled = true;
+        cube2.GetComponent<Renderer>().enabled = true;
+        isDestroyed = false;
+    }
+
+    public IEnumerator DestroyCoin(GameObject player)
     {
         isDestroyed = true;
+
+        transform.parent = player.transform;
 
         if (!worldSpawner)
         {

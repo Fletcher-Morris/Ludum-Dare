@@ -119,6 +119,7 @@ public class WorldSpawner : MonoBehaviour
                 GameObject coin = m_coinPool[i];
                 coin.transform.position = position;
                 coin.SetActive(true);
+                coin.GetComponent<Coin>().Reset();
 
                 return coin;
             }
@@ -128,6 +129,7 @@ public class WorldSpawner : MonoBehaviour
     }
     public void DestroyCoin(GameObject coin)
     {
+        coin.transform.parent = null;
         coin.SetActive(false);
     }
 
@@ -203,7 +205,27 @@ public class WorldSpawner : MonoBehaviour
             else if (j == 7)
                 coinXY = new Vector2(-1, 1).normalized;
 
+
+            Vector3 coinRot = Vector3.zero;
+            if (j == 0)
+                coinRot = new Vector3(90, 0, 180);
+            else if (j == 1)
+                coinRot = new Vector3(45, -90, 90);
+            else if (j == 2)
+                coinRot = new Vector3(180, 90, 90);
+            else if (j == 3)
+                coinRot = new Vector3(-135, 90, 90);
+            else if (j == 4)
+                coinRot = new Vector3(-90, 0, 0);
+            else if (j == 5)
+                coinRot = new Vector3(-135, -90, 90);
+            else if (j == 6)
+                coinRot = new Vector3(180, -90, 90);
+            else if (j == 7)
+                coinRot = new Vector3(135, -90, 90);
+
             GameObject newCoin = SpawnCoin(new Vector3(coinXY.x * 11f, coinXY.y * 11f, m_segmentCount * 30));
+            newCoin.transform.eulerAngles = coinRot;
         }
 
         m_newestSegmentPos = m_segmentCount * 30;
