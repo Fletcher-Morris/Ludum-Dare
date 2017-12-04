@@ -10,6 +10,12 @@ public class Player : MonoBehaviour
     public float rotateSpeed;
     public AnimationCurve rotationCurve;
     private bool m_isRotating = false;
+    private Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
 
     void Update()
     {
@@ -21,6 +27,8 @@ public class Player : MonoBehaviour
                 Debug.Log("Rotating");
             }
         }
+
+        rb.AddForce(transform.forward * Input.GetAxis("Vertical") * 5f);
     }
 
     public IEnumerator ChangeDirection(float change)

@@ -12,6 +12,7 @@ public class Coin : MonoBehaviour
     public int value;
     [HideInInspector]
     public WorldSpawner worldSpawner;
+    private bool isDestroyed = false;
 
     void Start()
     {
@@ -30,7 +31,7 @@ public class Coin : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !isDestroyed)
         {
             other.GetComponent<Player>().AddCoin(value);
             StartCoroutine(DestroyCoin());
@@ -39,6 +40,8 @@ public class Coin : MonoBehaviour
 
     public IEnumerator DestroyCoin()
     {
+        isDestroyed = true;
+
         if (!worldSpawner)
         {
             worldSpawner = GameObject.Find("World Spawner").GetComponent<WorldSpawner>();
