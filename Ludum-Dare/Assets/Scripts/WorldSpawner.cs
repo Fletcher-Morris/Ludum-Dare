@@ -16,6 +16,7 @@ public class WorldSpawner : MonoBehaviour
     private List<GameObject> m_coinPool;
 
     public int segmentPoolSize = 200;
+    public int blockPoolSize = 50;
     public int coinPoolSize = 50;
 
     private int m_segmentCount = 0;
@@ -58,6 +59,14 @@ public class WorldSpawner : MonoBehaviour
                 }
             }
 
+            foreach (GameObject block in m_medBlockerPool)
+            {
+                if (block.transform.position.z <= m_oldestSegmentPos && block.activeInHierarchy)
+                {
+                    DestroyMedBlocker(block);
+                }
+            }
+
             foreach (GameObject coin in m_coinPool)
             {
                 if (coin.transform.position.z <= m_oldestSegmentPos + 30 && coin.activeInHierarchy)
@@ -78,6 +87,7 @@ public class WorldSpawner : MonoBehaviour
     void CreatePool()
     {
         m_regSegPool = new List<GameObject>();
+        m_medBlockerPool = new List<GameObject>();
         m_coinPool = new List<GameObject>();
 
         for (int i = 0; i < segmentPoolSize; i++)
@@ -85,6 +95,12 @@ public class WorldSpawner : MonoBehaviour
             GameObject obj = GameObject.Instantiate(regularSegment);
             obj.SetActive(false);
             m_regSegPool.Add(obj);
+        }
+        for (int i = 0; i < blockPoolSize; i++)
+        {
+            GameObject obj = GameObject.Instantiate(mediumBlocker);
+            obj.SetActive(false);
+            m_medBlockerPool.Add(obj);
         }
         for (int i = 0; i < coinPoolSize; i++)
         {
@@ -116,6 +132,27 @@ public class WorldSpawner : MonoBehaviour
         segment.SetActive(false);
         m_generatedSections--;
         m_generatedSections = Mathf.Clamp(m_generatedSections, 0, segmentPoolSize);
+    }
+
+    public GameObject SpawnMedBlocker(Vector3 position)
+    {
+        for (int i = 0; i < m_medBlockerPool.Count; i++)
+        {
+            if (!m_medBlockerPool[i].activeInHierarchy)
+            {
+                GameObject blocker = m_medBlockerPool[i];
+                blocker.transform.position = position;
+                blocker.SetActive(true);
+
+                return blocker;
+            }
+        }
+
+        return null;
+    }
+    public void DestroyMedBlocker(GameObject blocker)
+    {
+        blocker.SetActive(false);
     }
 
     public GameObject SpawnCoin(Vector3 position)
@@ -192,48 +229,60 @@ public class WorldSpawner : MonoBehaviour
             m_generatedSections = Mathf.Clamp(m_generatedSections, 0, segmentPoolSize);
         }
 
-        if(Random.Range(0,2) == 0 && spawnCoins)
+        if(Random.Range(0,2) == 0)
         {
-            Vector2 coinXY = Vector2.zero;
+            if (spawnCoins)
+            {
+                Vector2 coinXY = Vector2.zero;
+                int j = Random.Range(0, 7);
+                if (j == 0)
+                    coinXY = new Vector2(0, 1).normalized;
+                else if (j == 1)
+                    coinXY = new Vector2(1, 1).normalized;
+                else if (j == 2)
+                    coinXY = new Vector2(1, 0).normalized;
+                else if (j == 3)
+                    coinXY = new Vector2(1, -1).normalized;
+                else if (j == 4)
+                    coinXY = new Vector2(0, -1).normalized;
+                else if (j == 5)
+                    coinXY = new Vector2(-1, -1).normalized;
+                else if (j == 6)
+                    coinXY = new Vector2(-1, 0).normalized;
+                else if (j == 7)
+                    coinXY = new Vector2(-1, 1).normalized;
+
+
+                Vector3 coinRot = Vector3.zero;
+                if (j == 0)
+                    coinRot = new Vector3(90, 0, 180);
+                else if (j == 1)
+                    coinRot = new Vector3(45, -90, 90);
+                else if (j == 2)
+                    coinRot = new Vector3(180, 90, 90);
+                else if (j == 3)
+                    coinRot = new Vector3(-135, 90, 90);
+                else if (j == 4)
+                    coinRot = new Vector3(-90, 0, 0);
+                else if (j == 5)
+                    coinRot = new Vector3(-135, -90, 90);
+                else if (j == 6)
+                    coinRot = new Vector3(180, -90, 90);
+                else if (j == 7)
+                    coinRot = new Vector3(135, -90, 90);
+
+                GameObject newCoin = SpawnCoin(new Vector3(coinXY.x * 11f, coinXY.y * 11f, m_segmentCount * 30));
+                newCoin.transform.eulerAngles = coinRot; 
+            }
+        }
+        else if(spawnBlockers && Random.Range(0,3) == 0)
+        {
+
             int j = Random.Range(0, 7);
-            if (j == 0)
-                coinXY = new Vector2(0, 1).normalized;
-            else if (j == 1)
-                coinXY = new Vector2(1, 1).normalized;
-            else if (j == 2)
-                coinXY = new Vector2(1, 0).normalized;
-            else if (j == 3)
-                coinXY = new Vector2(1, -1).normalized;
-            else if (j == 4)
-                coinXY = new Vector2(0, -1).normalized;
-            else if (j == 5)
-                coinXY = new Vector2(-1, -1).normalized;
-            else if (j == 6)
-                coinXY = new Vector2(-1, 0).normalized;
-            else if (j == 7)
-                coinXY = new Vector2(-1, 1).normalized;
+            Vector3 blockRot = new Vector3(0, 0, (45 * j));
 
-
-            Vector3 coinRot = Vector3.zero;
-            if (j == 0)
-                coinRot = new Vector3(90, 0, 180);
-            else if (j == 1)
-                coinRot = new Vector3(45, -90, 90);
-            else if (j == 2)
-                coinRot = new Vector3(180, 90, 90);
-            else if (j == 3)
-                coinRot = new Vector3(-135, 90, 90);
-            else if (j == 4)
-                coinRot = new Vector3(-90, 0, 0);
-            else if (j == 5)
-                coinRot = new Vector3(-135, -90, 90);
-            else if (j == 6)
-                coinRot = new Vector3(180, -90, 90);
-            else if (j == 7)
-                coinRot = new Vector3(135, -90, 90);
-
-            GameObject newCoin = SpawnCoin(new Vector3(coinXY.x * 11f, coinXY.y * 11f, m_segmentCount * 30));
-            newCoin.transform.eulerAngles = coinRot;
+            GameObject newBlock = SpawnMedBlocker(new Vector3(0, 0, m_segmentCount * 30));
+            newBlock.transform.eulerAngles = blockRot;
         }
 
         m_newestSegmentPos = m_segmentCount * 30;

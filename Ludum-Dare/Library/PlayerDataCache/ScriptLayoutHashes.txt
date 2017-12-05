@@ -133,5 +133,6 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.VR.WSA.SpatialMappingRenderer
 67a0ee8242b877e9b295466346f0397a Assembly-CSharp.dll:.Coin
 f671a42aea5f34fec6a4450a3668c615 Assembly-CSharp.dll:UnityEngine.PostProcessing.PostProcessingProfile
-17995f36e90b1337a7e804bd87ed6cf1 Assembly-CSharp.dll:.WorldSpawner
-db28cde05f35184dce7ff51faae5100e Assembly-CSharp.dll:.Player
+7df41d820dd44a8dc9d7f655aabe2633 Assembly-CSharp.dll:.WorldSpawner
+c0c9138ffd306c58a87dbea2405a7a35 Assembly-CSharp.dll:.Player
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Blocker

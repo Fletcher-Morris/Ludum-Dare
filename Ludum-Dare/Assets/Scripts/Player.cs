@@ -36,6 +36,16 @@ public class Player : MonoBehaviour
     public Material surfaceMat;
     public PostProcessingProfile profile;
 
+    public GameObject deathMenu;
+    public bool isDead = false;
+    public ParticleSystem emitter;
+    public List<BoxCollider> colliders;
+    public int highscore = 0;
+    public Text deathScore;
+    public Text deathHighScore;
+
+    public Text helpText;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -54,6 +64,11 @@ public class Player : MonoBehaviour
         menuPanel.SetActive(false);
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        isDead = false;
+        scoreText.gameObject.SetActive(true);
+        speedText.gameObject.SetActive(true);
+        helpText.gameObject.SetActive(true);
+        helpText.text = "MOVE USING A/D, LEFT/RIGHT, OR THUMB-STICK.";
     }
 
     public void Quit()
@@ -89,7 +104,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && canControll)
+        if (Input.GetKeyDown(KeyCode.Escape) && canControll && !isDead)
         {
             Pause();
         }
@@ -112,7 +127,12 @@ public class Player : MonoBehaviour
                 if (!m_isRotating)
                 {
                     StartCoroutine(ChangeDirection(Mathf.RoundToInt(Input.GetAxis("Horizontal")) * 45));
-                    Debug.Log("Rotating");
+
+                    if (helpText)
+                    {
+                        helpText.text = "PICK UP TESSERACTS TO INCREASE YOUR SCORE.\nTHE MORE TESSERACTS YOU PICK UP, THE FASTER YOU GO.\nAVOID WALLS, THEY ARE NOT GOOD.";
+                        Destroy(helpText.gameObject, 8f); 
+                    }
                 }
             }
 
@@ -201,8 +221,35 @@ public class Player : MonoBehaviour
 
     public void AddCoin(int value)
     {
-        score += value;
-        decayedScore = score;
-        targetSpeed += value;
+        if (!isDead)
+        {
+            score += value;
+            decayedScore = score;
+            targetSpeed += value; 
+        }
+    }
+
+    public void Kill()
+    {
+        emitter.Emit(100);
+        isDead = true;
+        canControll = false;
+        deathMenu.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        foreach (BoxCollider col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        highscore = PlayerPrefs.GetInt("hs");
+        if(score > highscore)
+        {
+            highscore = score;
+            PlayerPrefs.SetInt("hs", score);
+        }
+
+        deathScore.text = "YOUR SCORE: " + score;
+        deathHighScore.text = "HIGHSCORE: " + highscore;
     }
 }
