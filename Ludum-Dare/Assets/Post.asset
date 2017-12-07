@@ -123,7 +123,7 @@ MonoBehaviour:
         postExposure: 0
         temperature: 0
         tint: 0
-        hueShift: 0
+        hueShift: 3.2013392
         saturation: 1
         contrast: 1
       channelMixer:
@@ -290,7 +290,7 @@ MonoBehaviour:
     m_Settings:
       colored: 0
       intensity: 0.5
-      size: 1.5
+      size: 1.25
       luminanceContribution: 1
   vignette:
     m_Enabled: 1

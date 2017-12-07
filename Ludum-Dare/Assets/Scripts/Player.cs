@@ -135,6 +135,32 @@ public class Player : MonoBehaviour
                     }
                 }
             }
+            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+            {
+                if (!m_isRotating)
+                {
+                    StartCoroutine(ChangeDirection(-45));
+
+                    if (helpText)
+                    {
+                        helpText.text = "PICK UP TESSERACTS TO INCREASE YOUR SCORE.\nTHE MORE TESSERACTS YOU PICK UP, THE FASTER YOU GO.\nAVOID WALLS, THEY ARE NOT GOOD.";
+                        Destroy(helpText.gameObject, 8f);
+                    }
+                }
+            }
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+            {
+                if (!m_isRotating)
+                {
+                    StartCoroutine(ChangeDirection(45));
+
+                    if (helpText)
+                    {
+                        helpText.text = "PICK UP TESSERACTS TO INCREASE YOUR SCORE.\nTHE MORE TESSERACTS YOU PICK UP, THE FASTER YOU GO.\nAVOID WALLS, THEY ARE NOT GOOD.";
+                        Destroy(helpText.gameObject, 8f);
+                    }
+                }
+            }
 
             if (!paused)
             {
